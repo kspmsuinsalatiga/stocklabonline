@@ -205,7 +205,7 @@
           <header class="game-topbar">
             <a class="game-brand" href="./" aria-label="StockLab"><span class="game-brand-symbol">S</span><strong>Stock<span>Lab</span></strong></a>
             <div class="game-room-meta">
-              <div><small>RUANGAN</small><strong id="game-room-code">—</strong></div>
+              <div class="game-room-meta-room"><small>RUANGAN</small><strong id="game-room-code">—</strong><span id="game-subtitle">Meja permainan</span></div>
               <div><small>RONDE</small><strong id="game-round">01</strong></div>
             </div>
             <nav class="game-phase-nav" aria-label="Tahapan permainan">
@@ -221,11 +221,6 @@
               <button class="game-top-button game-exit-button" id="leave-game-button" type="button">Keluar</button>
             </div>
           </header>
-
-          <section class="room-status-panel game-room-status-panel" id="game-room-status-panel" hidden>
-            <div class="room-status-heading"><strong>Status pemain</strong><span>Riwayat keluar dari room.</span></div>
-            <div id="game-room-status-feed" class="room-status-feed" aria-live="polite"><p>Belum ada pemain yang keluar.</p></div>
-          </section>
 
           <section class="phase-banner">
             <div class="phase-banner-current">
@@ -268,9 +263,9 @@
 
                 <details class="game-log-details" id="game-log-details">
                   <summary>Log pertandingan dan status room <span>Riwayat aksi, transaksi, dan pemain keluar</span></summary>
-                  <section class="room-status-panel game-room-status-panel" id="game-room-status-panel-drawer">
+                  <section class="room-status-panel game-room-status-panel" id="game-room-status-panel">
                     <div class="room-status-heading"><strong>Status pemain</strong><span>Riwayat keluar dari room.</span></div>
-                    <div id="game-room-status-feed-drawer" class="room-status-feed" aria-live="polite"><p>Belum ada pemain yang keluar.</p></div>
+                    <div id="game-room-status-feed" class="room-status-feed" aria-live="polite"><p>Belum ada pemain yang keluar.</p></div>
                   </section>
                   <section class="board-section activity-log-section">
                     <div class="board-section-heading"><h4>Aktivitas meja</h4><span>Aksi dan transaksi terbaru</span></div>
