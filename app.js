@@ -630,6 +630,7 @@ function renderMarket(market, state) {
   const makeSectorCard = (sector, isLinked) => {
     const cell = makeElement("article", "market-unit-card market-sector-card" +
       (isLinked ? " is-mutual-fund-source" : ""));
+    cell.dataset.sector = sector.id;
     const heading = makeElement("div", "market-unit-heading");
     heading.append(makeElement("strong", "", sector.name));
     const remaining = economyCardsRemaining(state, sector.id);
@@ -1275,7 +1276,7 @@ function renderGame(view) {
   }
   const actionMarketReady = Array.isArray(state.action_market) && state.action_market.length > 0;
   const showActionMarket = view.phase === "action" ||
-    (view.phase === "bidding" && actionMarketReady && !economyReviewPending);
+    (view.phase === "bidding" && actionMarketReady && !economyReviewPending && !offeringDebt);
   ui.actionMarketSection.hidden = !showActionMarket;
   if (view.phase !== "action" || view.active_user_id !== sessionState.user.id) sessionState.selectedActionCardId = null;
   // Keep the public four-card reveal visible through the debt-decision step.
