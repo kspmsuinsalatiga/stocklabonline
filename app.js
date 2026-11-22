@@ -54,6 +54,21 @@ const ui = {
   finalSection: byId("final-section"), finalScores: byId("final-scores"), gameNote: byId("game-note")
 };
 
+byId("game-rules-open")?.addEventListener("click", () => {
+  const dialog = byId("game-rules-dialog");
+  if (dialog && typeof dialog.showModal === "function") dialog.showModal();
+});
+byId("game-rules-close")?.addEventListener("click", () => {
+  const dialog = byId("game-rules-dialog");
+  if (dialog && typeof dialog.close === "function") dialog.close();
+});
+byId("game-log-button")?.addEventListener("click", () => {
+  const details = byId("game-log-details");
+  if (!details) return;
+  details.open = !details.open;
+  if (details.open) details.scrollIntoView({ behavior: "smooth", block: "nearest" });
+});
+
 const sessionState = {
   user: null, username: "", roomId: null, roomCode: "", roomMeta: null,
   members: [], gameView: null, channel: null, gameLoadSeq: 0,
@@ -1201,6 +1216,11 @@ function renderGame(view) {
   ui.gameTable.hidden = false;
   document.body.classList.add("game-in-progress");
   ui.gameRound.textContent = String(view.current_round || 1).padStart(2, "0");
+  document.body.dataset.gamePhase = view.phase || "";
+  document.body.dataset.gamePhaseStatus = state.phase_status || "";
+  const roomCodeLabel = byId("game-room-code");
+  if (roomCodeLabel) roomCodeLabel.textContent = sessionState.roomCode || "—";
+  renderGamePhaseNav(view);
   const drawingOrderCards = view.phase === "bidding" && state.phase_status === "awaiting_order_picks";
   const offeringDebt = view.phase === "bidding" && state.phase_status === "awaiting_debt_decisions";
   const economyItems = Array.isArray(state.last_economy) ? state.last_economy : [];
@@ -1237,6 +1257,8 @@ function renderGame(view) {
   ui.ownShares.textContent = String(totalShares);
   ui.ownDebt.textContent = debt > 0 ? debt + " kartu utang · penalti akhir " + (debt * 13) : "Tanpa utang";
   ui.gamePlayerCount.textContent = players.length + " pemain";
+  const portfolioCountLabel = byId("portfolio-player-count");
+  if (portfolioCountLabel) portfolioCountLabel.textContent = players.length + " pemain";
   renderMarket(market, { ...state, phase: view.phase, round: view.current_round, events: view.events || [] });
   renderPortfolio(players, view.phase === "bidding" && state.phase_status === "awaiting_order_picks");
   renderActivityFeed(view.events || [], players);
@@ -1294,6 +1316,17 @@ function renderGame(view) {
   else ui.actionMarket.replaceChildren();
 
   ui.gameNote.textContent = "Saldo pribadi hanya terlihat oleh pemiliknya. Deck kartu ekonomi dan aksi di versi ini merupakan adaptasi digital komunitas, bukan komposisi resmi yang telah diverifikasi.";
+}
+
+function renderGamePhaseNav(view) {
+  const current = view && view.phase ? view.phase : "";
+  document.querySelectorAll("[data-game-step]").forEach((step) => {
+    const active = step.dataset.gameStep === current;
+    step.classList.toggle("is-current", active);
+    step.classList.toggle("is-complete", false);
+    if (active) step.setAttribute("aria-current", "step");
+    else step.removeAttribute("aria-current");
+  });
 }
 
 function phaseName(phase) {
