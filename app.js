@@ -650,16 +650,20 @@ function renderMarket(market, state) {
       isLinked ? "Penentu harga Reksa Dana" : "Harga per saham");
     const economySlot = makeElement("div", "sector-economy-slot");
     const lastCard = latestEconomy.find(item => item.stack_sector === sector.id);
+    const economyInfo = makeElement("div", "sector-economy-info");
+    economyInfo.append(makeElement("small", "sector-economy-remaining",
+      remaining > 0 ? "SISA " + remaining + " KARTU" : "DECK HABIS"));
     if (lastCard && lastCard.card) {
       appendCardImage(economySlot, economyCardAsset(lastCard.card),
         "Kartu ekonomi terakhir sektor " + sector.name, "sector-economy-image");
-      economySlot.append(makeElement("small", "sector-economy-caption",
+      economyInfo.append(makeElement("small", "sector-economy-caption",
         "TERAKHIR · " + (lastCard.card.name || "Kartu ekonomi")));
     } else {
       appendCardImage(economySlot, "./assets/cards/components/stocklab-back-dark.webp",
         "Kartu ekonomi tertutup sektor " + sector.name, "sector-economy-image is-back");
-      economySlot.append(makeElement("small", "sector-economy-caption", "KARTU EKONOMI"));
+      economyInfo.append(makeElement("small", "sector-economy-caption", "BELUM DIBUKA"));
     }
+    economySlot.append(economyInfo);
     cell.append(heading, art, price, footer, economySlot);
     return cell;
   };
@@ -748,10 +752,13 @@ function renderGameSeats(players, view, privateState) {
     const identity = makeElement("div", "seat-identity");
     const nameRow = makeElement("div", "seat-name-order");
     const orderMarker = makeElement("span", "seat-order-card" + (isTurn ? " is-active" : ""));
+    const visibleOrderNumber = Number(player.order_card_number || player.order_no || 0);
+    appendCardImage(orderMarker, "./assets/cards/components/stocklab-back-red.webp",
+      "Kartu urutan pemain", "seat-order-card-image");
     orderMarker.append(
-      makeElement("small", "", "URUTAN"),
-      makeElement("strong", "", Number(player.order_card_number || player.order_no || 0) > 0
-        ? String(player.order_card_number || player.order_no) : "—")
+      makeElement("small", "seat-order-card-caption", "URUTAN"),
+      makeElement("strong", "seat-order-card-number",
+        visibleOrderNumber > 0 ? String(visibleOrderNumber) : "—")
     );
     nameRow.append(orderMarker, makeElement("strong", "seat-player-name", player.display_name || "Pemain"));
     identity.append(nameRow);
@@ -1194,8 +1201,8 @@ function economyCardsRemaining(state, sectorId) {
   if (stored !== null && stored !== undefined && stored !== "" && Number.isFinite(Number(stored))) {
     return Math.max(0, Number(stored));
   }
-  // Seven cards per sector: before the first economy reveal, all seven remain.
-  return Math.max(0, 8 - Number(state.round || 1));
+  // Each sector stack starts with six cards and one is revealed per round.
+  return Math.max(0, 7 - Number(state.round || 1));
 }
 
 function currentPlayer(view) {
