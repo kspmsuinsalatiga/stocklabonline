@@ -6377,3 +6377,143 @@ body.game-in-progress .portfolio-details {
     min-height:120px !important;
   }
 }
+
+
+/* STOCKLAB DECK STRATEGY + ECONOMY STAGE v29 */
+body.game-in-progress.economy-reviewing .market-section,
+body.game-in-progress.economy-debt-stage .market-section {
+  display:none !important;
+}
+body.game-in-progress .market-unit-card,
+body.game-in-progress .mutual-fund-unit-card {
+  grid-template-rows:auto minmax(168px,auto) auto auto auto !important;
+  min-height:0 !important;
+}
+body.game-in-progress .market-unit-art,
+body.game-in-progress .mutual-fund-unit-card .mf-center-art {
+  height:auto !important;
+  min-height:168px !important;
+  max-height:none !important;
+  aspect-ratio:1.55 / 1;
+  overflow:hidden !important;
+}
+body.game-in-progress .market-unit-art .market-board-image,
+body.game-in-progress .mutual-fund-unit-card .mutual-fund-center-image {
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:100% !important;
+  max-height:100% !important;
+  object-fit:contain !important;
+  object-position:center !important;
+}
+body.game-in-progress .sector-economy-slot {
+  height:auto !important;
+  min-height:58px !important;
+  padding:5px 6px !important;
+  gap:7px !important;
+}
+body.game-in-progress .sector-economy-info {
+  display:grid;
+  align-content:center;
+  gap:3px;
+  min-width:0;
+  flex:1 1 auto;
+}
+body.game-in-progress .sector-economy-remaining {
+  display:block;
+  color:#f2cc83 !important;
+  font-size:9px !important;
+  font-weight:900 !important;
+  line-height:1.15;
+  letter-spacing:.045em;
+}
+body.game-in-progress .sector-economy-caption {
+  display:block;
+  color:#c0cad9 !important;
+  font-size:8px !important;
+  line-height:1.25;
+  overflow-wrap:anywhere;
+}
+body.game-in-progress .seat-order-card {
+  position:relative !important;
+  display:block !important;
+  width:42px !important;
+  height:60px !important;
+  min-height:60px !important;
+  flex:0 0 42px !important;
+  overflow:hidden !important;
+  border:1px solid #d8b66d !important;
+  border-radius:4px !important;
+  background:#9e283a !important;
+  box-shadow:0 2px 5px #0005;
+}
+body.game-in-progress .seat-order-card.is-active {
+  outline:2px solid #ffd77c;
+  outline-offset:1px;
+  box-shadow:0 0 0 3px #ffd77c33,0 3px 9px #0007;
+}
+body.game-in-progress .seat-order-card-image {
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  opacity:.96;
+}
+body.game-in-progress .seat-order-card-caption {
+  position:absolute;
+  top:4px;
+  left:0;
+  right:0;
+  z-index:1;
+  color:#ffe9b3 !important;
+  font-size:6px !important;
+  font-weight:900 !important;
+  line-height:1;
+  letter-spacing:.08em;
+  text-align:center;
+  text-shadow:0 1px 3px #4d1420;
+}
+body.game-in-progress .seat-order-card-number {
+  position:absolute;
+  left:50%;
+  top:52%;
+  z-index:1;
+  display:grid;
+  place-items:center;
+  width:25px;
+  height:25px;
+  transform:translate(-50%,-50%);
+  border:1px solid #f5d891;
+  border-radius:50%;
+  background:#f3d68d;
+  color:#48202a !important;
+  font:900 15px/1 Georgia,serif !important;
+  text-shadow:none;
+}
+body.game-in-progress .game-player-seat {
+  min-height:76px !important;
+}
+@media (max-width:900px) {
+  body.game-in-progress .market-unit-card,
+  body.game-in-progress .mutual-fund-unit-card {
+    grid-template-rows:auto minmax(150px,auto) auto auto auto !important;
+  }
+  body.game-in-progress .market-unit-art,
+  body.game-in-progress .mutual-fund-unit-card .mf-center-art {
+    min-height:150px !important;
+  }
+}
+@media (max-width:620px) {
+  body.game-in-progress .market-unit-card,
+  body.game-in-progress .mutual-fund-unit-card {
+    grid-template-rows:auto minmax(144px,auto) auto auto auto !important;
+  }
+  body.game-in-progress .market-unit-art,
+  body.game-in-progress .mutual-fund-unit-card .mf-center-art {
+    min-height:144px !important;
+  }
+  body.game-in-progress .game-player-seat { min-height:82px !important; }
+}
