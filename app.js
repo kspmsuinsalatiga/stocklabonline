@@ -753,13 +753,13 @@ function renderGameSeats(players, view, privateState) {
     const nameRow = makeElement("div", "seat-name-order");
     const orderMarker = makeElement("span", "seat-order-card" + (isTurn ? " is-active" : ""));
     const visibleOrderNumber = Number(player.order_card_number || player.order_no || 0);
-    appendCardImage(orderMarker, "./assets/cards/components/stocklab-back-red.webp",
-      "Kartu urutan pemain", "seat-order-card-image");
-    orderMarker.append(
-      makeElement("small", "seat-order-card-caption", "URUTAN"),
-      makeElement("strong", "seat-order-card-number",
-        visibleOrderNumber > 0 ? String(visibleOrderNumber) : "—")
-    );
+    const orderAsset = visibleOrderNumber >= 1 && visibleOrderNumber <= 5
+      ? "./assets/cards/components/timer-" + visibleOrderNumber + ".webp"
+      : "./assets/cards/components/stocklab-back-red.webp";
+    appendCardImage(orderMarker, orderAsset,
+      visibleOrderNumber >= 1 && visibleOrderNumber <= 5
+        ? "Kartu urutan nomor " + visibleOrderNumber : "Kartu urutan tertutup",
+      "seat-order-card-image");
     nameRow.append(orderMarker, makeElement("strong", "seat-player-name", player.display_name || "Pemain"));
     identity.append(nameRow);
     const tags = [];
@@ -1238,13 +1238,11 @@ function renderGame(view) {
     ? String(economyRevealEvent.id)
     : String(sessionState.roomId || "room") + "-" + String(view.current_round || 1) + "-" +
       economyItems.map(item => item.card && item.card.id || item.stack_sector).join("-");
-  const noDebtEconomyReview = view.phase === "bidding" &&
-    state.phase_status === "awaiting_bids" &&
+  const economyReviewPending = view.phase === "bidding" &&
     economyItems.length > 0 &&
-    economyRevealEvent && latestEvent && String(latestEvent.id) === String(economyRevealEvent.id);
-  const economyReviewPending = economyItems.length > 0 &&
-    (offeringDebt || noDebtEconomyReview) &&
-    sessionState.economyReviewAcknowledgedEventId !== economyReviewEventId;
+    Boolean(economyRevealEvent) &&
+    Number(state.economy_review_done_round || 0) !== Number(view.current_round || 0);
+  view.economy_review_pending = economyReviewPending;
   const keepEconomyVisible = economyItems.length > 0 && (offeringDebt || economyReviewPending);
   ui.gamePhase.textContent = economyReviewPending ? "Hasil Ekonomi" :
     drawingOrderCards ? "Kartu Urutan" :
@@ -1310,7 +1308,8 @@ function renderGame(view) {
   renderPhaseControls(view, own, coins, {
     required:economyReviewPending,
     eventId:economyReviewEventId,
-    hasDebtOffers:offeringDebt
+    hasDebtOffers:offeringDebt,
+    isHost:sessionState.roomMeta?.host_id === sessionState.user.id
   });
 
   // Keep the active decision panel immediately visible, not below the oversized market.
@@ -1349,6 +1348,11 @@ function renderPhaseTimer(view) {
   sessionState.autoTimeoutPending = false;
   const drawingOrderCards = view.phase === "bidding" && view.state &&
     view.state.phase_status === "awaiting_order_picks";
+  if (view.economy_review_pending) {
+    ui.phaseTimer.textContent = "Host";
+    ui.phaseTimer.classList.remove("is-expired");
+    return;
+  }
   const deadline = view.phase_deadline ? new Date(view.phase_deadline).getTime() : 0;
   if (!deadline || view.phase === "finished" || drawingOrderCards) {
     ui.phaseTimer.textContent = "—";
@@ -1400,22 +1404,28 @@ function renderPhaseControls(view, own, coins, economyReview = {}) {
   const isActive = view.active_user_id === sessionState.user.id;
 
   if (economyReview.required) {
-    const panel = makeElement("div", "phase-panel economy-review-step-panel");
-    panel.append(makeElement("small", "economy-review-kicker",
-      "RONDE " + Number(view.current_round || 1) + " · HASIL PEMBUKAAN PASAR"));
-    panel.append(makeElement("h4", "", "Periksa empat kartu ekonomi"));
-    panel.append(makeElement("p", "muted-text",
-      "Kartu dan dampaknya sudah diterapkan. Lihat semua kartu di atas; setelah lanjut, penawaran utang akan dibuka terlebih dahulu."));
-    const next = makeElement("button", "button primary economy-review-continue",
-      economyReview.hasDebtOffers ? "Lanjut ke penawaran utang" : "Lanjut ke bidding");
-    next.type = "button";
-    next.addEventListener("click", () => {
-      sessionState.economyReviewAcknowledgedEventId = economyReview.eventId;
-      document.body.classList.remove("economy-reviewing");
-      renderGame(sessionState.gameView || view);
-    });
-    panel.append(next);
-    ui.phaseControls.append(panel);
+    const heading = ui.economySection && ui.economySection.querySelector(".board-section-heading");
+    if (heading) {
+      heading.querySelector(".economy-review-host-action")?.remove();
+      const hostAction = makeElement("div", "economy-review-host-action");
+      if (economyReview.isHost) {
+        const next = makeElement("button", "button primary economy-review-continue",
+          economyReview.hasDebtOffers ? "Lanjut ke penawaran utang" : "Lanjut ke bidding");
+        next.type = "button";
+        next.addEventListener("click", async () => {
+          setBusy(next, true, "Membuka tahap berikutnya…");
+          await runGameAction(() => db.rpc("advance_economy_review", {
+            p_room_id: sessionState.roomId
+          }), "Tahap hasil ekonomi selesai. Semua pemain masuk ke tahap berikutnya.");
+          setBusy(next, false);
+        });
+        hostAction.append(next);
+      } else {
+        hostAction.append(makeElement("small", "economy-review-waiting",
+          "Menunggu host melanjutkan…"));
+      }
+      heading.append(hostAction);
+    }
     return;
   }
 
