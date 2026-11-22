@@ -1051,10 +1051,24 @@ function renderEconomyLast(state) {
     ui.economyReveal.append(makeElement("p", "muted-text", "Belum ada kartu ekonomi yang dibuka."));
     return;
   }
+  const rawPair = Array.isArray(state.mutual_fund_pair) && state.mutual_fund_pair.length === 2
+    ? state.mutual_fund_pair : ["consumer", "agriculture"];
+  let linkedSectors = rawPair.map(id => SECTORS.find(sector => sector.id === id)).filter(Boolean);
+  const pair = linkedSectors.length === 2 ? rawPair : ["consumer", "agriculture"];
+  linkedSectors = pair.map(id => SECTORS.find(sector => sector.id === id)).filter(Boolean);
+  const unlinkedSectors = SECTORS.filter(sector => !pair.includes(sector.id));
+  const economyColumnBySector = new Map();
+  if (unlinkedSectors[0]) economyColumnBySector.set(unlinkedSectors[0].id, 1);
+  if (linkedSectors[0]) economyColumnBySector.set(linkedSectors[0].id, 2);
+  if (linkedSectors[1]) economyColumnBySector.set(linkedSectors[1].id, 4);
+  if (unlinkedSectors[1]) economyColumnBySector.set(unlinkedSectors[1].id, 5);
+
   let revealIndex = 0;
   for (const item of items) {
     const card = makeElement("article", "economy-card is-revealed");
     card.dataset.sector = item.stack_sector || "";
+    const alignedColumn = economyColumnBySector.get(item.stack_sector);
+    if (alignedColumn) card.style.gridColumn = String(alignedColumn);
     card.style.animationDelay = (revealIndex * 100) + "ms";
     revealIndex += 1;
     const economy = item.card || {};
