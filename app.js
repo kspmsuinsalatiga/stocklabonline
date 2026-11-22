@@ -1282,6 +1282,14 @@ function renderGame(view) {
     eventId:economyReviewEventId,
     hasDebtOffers:offeringDebt
   });
+
+  // Keep the active decision panel immediately visible, not below the oversized market.
+  // Economy reveal stays ahead of its acknowledgement/debt decision when it is visible.
+  const marketSection = ui.marketGrid && ui.marketGrid.closest(".market-section");
+  if (marketSection && ui.phaseControls && ui.phaseControls.parentElement === marketSection.parentElement) {
+    if (!ui.economySection.hidden) marketSection.parentElement.insertBefore(ui.economySection, ui.phaseControls);
+    marketSection.parentElement.insertBefore(ui.phaseControls, marketSection);
+  }
   if (showActionMarket) renderActionMarket(view, own);
   else ui.actionMarket.replaceChildren();
 
