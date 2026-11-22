@@ -5277,6 +5277,16 @@ body.game-in-progress .game-room-meta {
   gap:12px;
 }
 body.game-in-progress .game-room-meta>div { display:grid; gap:1px; }
+body.game-in-progress .game-room-meta-room #game-subtitle {
+  display:block;
+  max-width:190px;
+  overflow:hidden;
+  color:#8694aa;
+  font-size:7px;
+  line-height:1.15;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
 body.game-in-progress .game-room-meta small {
   color:#8593ad;
   font-size:8px;
