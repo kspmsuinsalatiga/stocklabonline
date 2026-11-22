@@ -6146,3 +6146,14 @@ body.game-in-progress .game-rules-dialog iframe {
   body.game-in-progress .action-market { grid-template-columns:repeat(2,minmax(0,1fr)); }
   body.game-in-progress .action-card-buttons { grid-template-columns:1fr; }
 }
+
+/* One-page layout final alignment: global site header supplies the StockLab brand. */
+body.game-in-progress .game-brand { display:none; }
+body.game-in-progress main.game-play-main {
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  max-width:none;
+  min-width:0;
+  margin:0;
+}
