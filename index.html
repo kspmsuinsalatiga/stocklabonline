@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#101831">
   <meta name="description" content="StockLab Online — buat meja, main bersama teman, dan pelajari simulasi pasar modal.">
   <title>StockLab Online — Beranda</title>
-  <link rel="stylesheet" href="style.css?v=20261122-stocklab-playable-v26">
+  <link rel="stylesheet" href="style.css?v=20261122-stocklab-onepage-v27">
 </head>
 <body>
   <div class="dashboard-shell">
@@ -202,92 +202,128 @@
         </section>
 
         <section class="game-board panel" id="game-table" hidden>
-          <div class="game-heading">
-            <div>
-              <p class="eyebrow">MEJA PERMAINAN</p>
-              <h3>StockLab</h3>
-              <p class="section-subtitle" id="game-subtitle">Permainan dimulai.</p>
-              <a class="tutorial-link" href="https://www.youtube.com/watch?v=0bd47voPuUs" target="_blank" rel="noopener noreferrer">▶ Lihat tutorial cara bermain StockLab</a>
+          <header class="game-topbar">
+            <a class="game-brand" href="./" aria-label="StockLab"><span class="game-brand-symbol">S</span><strong>Stock<span>Lab</span></strong></a>
+            <div class="game-room-meta">
+              <div><small>RUANGAN</small><strong id="game-room-code">—</strong></div>
+              <div><small>RONDE</small><strong id="game-round">01</strong></div>
             </div>
-            <div class="game-heading-actions">
-              <div class="round-label"><span>RONDE</span><strong id="game-round">01</strong></div>
-              <button class="button text-button leave-game-button" id="leave-game-button" type="button">Keluar room</button>
+            <nav class="game-phase-nav" aria-label="Tahapan permainan">
+              <span class="game-phase-step" data-game-step="bidding">Bidding</span>
+              <span class="game-phase-step" data-game-step="action">Aksi</span>
+              <span class="game-phase-step" data-game-step="sell">Jual</span>
+              <span class="game-phase-step" data-game-step="economy">Ekonomi</span>
+              <span class="game-phase-step" data-game-step="finished">Selesai</span>
+            </nav>
+            <div class="game-top-actions">
+              <button class="game-top-button" id="game-rules-open" type="button">Aturan</button>
+              <button class="game-top-button" id="game-log-button" type="button">Log</button>
+              <button class="game-top-button game-exit-button" id="leave-game-button" type="button">Keluar</button>
             </div>
-          </div>
+          </header>
 
-          <section class="room-status-panel game-room-status-panel" id="game-room-status-panel">
+          <section class="room-status-panel game-room-status-panel" id="game-room-status-panel" hidden>
             <div class="room-status-heading"><strong>Status pemain</strong><span>Riwayat keluar dari room.</span></div>
             <div id="game-room-status-feed" class="room-status-feed" aria-live="polite"><p>Belum ada pemain yang keluar.</p></div>
           </section>
 
-          <div class="phase-banner">
-            <div>
+          <section class="phase-banner">
+            <div class="phase-banner-current">
               <span>FASE SAAT INI</span>
               <strong id="game-phase">Bidding</strong>
             </div>
             <p id="game-phase-description">Penentuan urutan bermain.</p>
             <div class="phase-active-player"><span>SEDANG BERJALAN</span><strong id="phase-active-player">Menunggu pemain</strong></div>
             <div class="phase-clock"><span>WAKTU TERSISA</span><strong id="phase-timer">--:--</strong></div>
-          </div>
+          </section>
 
           <div class="game-tabletop" id="game-tabletop">
-            <div class="game-player-seats" id="game-player-seats" aria-live="polite"></div>
-            <div class="table-felt-core">
-              <section class="table-event-spotlight" id="game-event-spotlight" hidden aria-live="polite"></section>
-              <div class="board-section market-section">
-                <div class="board-section-heading"><h4>Pasar saham</h4><span>Empat saham dan Reksa Dana dalam satu blok · ▲ naik · ▼ turun</span></div>
-                <div class="market-unified-board">
-                  <div class="market-grid market-unified-grid" id="market-grid" aria-label="Pasar saham StockLab"></div>
-                </div>
+            <section class="board-section market-section">
+              <div class="board-section-heading">
+                <h4>Pasar saham</h4>
+                <span>Harga terkini · kartu ekonomi tersisa · portofolio kamu</span>
               </div>
-              <section class="phase-controls" id="phase-controls" aria-live="polite">
-                <div class="empty-state">Memuat fase permainan…</div>
-              </section>
-              <section class="board-section action-market-section" id="action-market-section" hidden>
-                <div class="board-section-heading"><h4>Kartu aksi di meja</h4><span id="action-market-count"></span></div>
-                <p class="card-table-hint">Saat giliranmu tiba, pilih kartu asli dari meja untuk disimpan atau diaktifkan.</p>
-                <div id="action-market" class="action-market" aria-live="polite"></div>
-              </section>
-              <section class="board-section economy-section" id="economy-section" hidden>
-                <div class="board-section-heading"><h4>Kartu ekonomi terakhir</h4><span>Terbuka untuk semua pemain</span></div>
-                <div id="economy-reveal" class="economy-reveal"></div>
-                <div id="economy-effect-summary" class="economy-effect-summary" hidden></div>
-              </section>
-              <section class="board-section activity-log-section">
-                <div class="board-section-heading"><h4>Aktivitas meja</h4><span>Aksi dan transaksi terbaru</span></div>
-                <div class="activity-feed" id="activity-feed" aria-live="polite">
-                  <p class="activity-empty">Belum ada aktivitas.</p>
-                </div>
-              </section>
-            </div>
-          </div>
+              <div class="market-unified-board">
+                <div class="market-grid market-unified-grid" id="market-grid" aria-label="Pasar saham StockLab"></div>
+              </div>
+            </section>
 
-          <div class="game-bottom-strip">
-            <div class="board-section wallet-section">
-              <div class="board-section-heading"><h4>Aset kamu</h4><span id="own-debt">Tanpa utang</span></div>
-              <div class="player-assets" id="player-assets">
-                <div><span>Uang</span><strong id="own-coins">15</strong><small>koin</small></div>
-                <div><span>Saham + Reksa Dana</span><strong id="own-shares">0</strong><small>unit</small></div>
-              </div>
-              <div class="private-peek" id="private-peek" hidden></div>
+            <div class="game-play-layout">
+              <main class="game-play-main">
+                <section class="phase-controls" id="phase-controls" aria-live="polite">
+                  <div class="empty-state">Memuat fase permainan…</div>
+                </section>
+
+                <section class="board-section economy-section" id="economy-section" hidden>
+                  <div class="board-section-heading"><h4>Empat kartu ekonomi terbuka</h4><span>Hasil berlaku untuk semua pemain</span></div>
+                  <div id="economy-reveal" class="economy-reveal"></div>
+                  <div id="economy-effect-summary" class="economy-effect-summary" hidden></div>
+                </section>
+
+                <section class="board-section action-market-section" id="action-market-section" hidden>
+                  <div class="board-section-heading"><h4>Pasar kartu aksi</h4><span id="action-market-count"></span></div>
+                  <p class="card-table-hint">Saat giliranmu, pilih kartu untuk disimpan sebagai aset atau aktifkan efeknya.</p>
+                  <div id="action-market" class="action-market" aria-live="polite"></div>
+                </section>
+
+                <details class="game-log-details" id="game-log-details">
+                  <summary>Log pertandingan dan status room <span>Riwayat aksi, transaksi, dan pemain keluar</span></summary>
+                  <section class="room-status-panel game-room-status-panel" id="game-room-status-panel-drawer">
+                    <div class="room-status-heading"><strong>Status pemain</strong><span>Riwayat keluar dari room.</span></div>
+                    <div id="game-room-status-feed-drawer" class="room-status-feed" aria-live="polite"><p>Belum ada pemain yang keluar.</p></div>
+                  </section>
+                  <section class="board-section activity-log-section">
+                    <div class="board-section-heading"><h4>Aktivitas meja</h4><span>Aksi dan transaksi terbaru</span></div>
+                    <div class="activity-feed" id="activity-feed" aria-live="polite">
+                      <p class="activity-empty">Belum ada aktivitas.</p>
+                    </div>
+                  </section>
+                </details>
+                <section class="table-event-spotlight" id="game-event-spotlight" hidden aria-live="polite"></section>
+              </main>
+
+              <aside class="game-play-sidebar">
+                <section class="players-panel">
+                  <div class="board-section-heading"><h4>Pemain</h4><span id="game-player-count">0 pemain</span></div>
+                  <div class="game-player-seats" id="game-player-seats" aria-live="polite"></div>
+                </section>
+
+                <div class="game-bottom-strip">
+                  <section class="board-section wallet-section">
+                    <div class="board-section-heading"><h4>Aset kamu</h4><span id="own-debt">Tanpa utang</span></div>
+                    <div class="player-assets" id="player-assets">
+                      <div><span>Uang</span><strong id="own-coins">15</strong><small>koin</small></div>
+                      <div><span>Saham + Reksa Dana</span><strong id="own-shares">0</strong><small>unit</small></div>
+                    </div>
+                    <div class="private-peek" id="private-peek" hidden></div>
+                  </section>
+                  <details class="portfolio-details" open>
+                    <summary>Portofolio pemain <span id="portfolio-player-count"></span></summary>
+                    <div class="portfolio-wrap">
+                      <table class="portfolio-table">
+                        <thead><tr><th>Pemain</th><th>Keu.</th><th>Kons.</th><th>Agri.</th><th>Tamb.</th><th>RD</th></tr></thead>
+                        <tbody id="game-players"></tbody>
+                      </table>
+                    </div>
+                  </details>
+                </div>
+              </aside>
             </div>
-            <details class="portfolio-details">
-              <summary>Lihat aset semua pemain <span id="game-player-count"></span></summary>
-              <div class="portfolio-wrap">
-                <table class="portfolio-table">
-                  <thead><tr><th>Pemain</th><th>Keuangan</th><th>Konsumer</th><th>Agrikultur</th><th>Tambang</th><th>Reksa Dana</th></tr></thead>
-                  <tbody id="game-players"></tbody>
-                </table>
-              </div>
-            </details>
           </div>
 
           <section class="board-section final-section" id="final-section" hidden>
             <div class="board-section-heading"><h4>Hasil akhir</h4><span>Peringkat berdasarkan total aset</span></div>
             <div id="final-scores" class="final-scores"></div>
           </section>
-
           <p class="game-note" id="game-note"></p>
+
+          <dialog class="game-rules-dialog" id="game-rules-dialog">
+            <div class="game-rules-dialog-head">
+              <div><small>PANDUAN BERMAIN</small><strong>Aturan StockLab</strong></div>
+              <button class="game-top-button" id="game-rules-close" type="button">Tutup</button>
+            </div>
+            <iframe src="./guide.html" title="Panduan aturan permainan StockLab" loading="lazy"></iframe>
+          </dialog>
         </section>
       </div>
     </section>
@@ -299,6 +335,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.2/dist/umd/supabase.js"></script>
-  <script src="app.js?v=20261122-stocklab-playable-v26"></script>
+  <script src="app.js?v=20261122-stocklab-onepage-v27"></script>
 </body>
 </html>
